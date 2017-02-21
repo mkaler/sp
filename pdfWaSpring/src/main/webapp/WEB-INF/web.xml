@@ -5,19 +5,21 @@
     <param-value>/WEB-INF/spring/root-context.xml</param-value>
   </context-param>
   <context-param>
-  	<param-name>upload</param-name>
-  	<param-value>uploads/</param-value>
+    <param-name>upload</param-name>
+    <param-value>uploads/</param-value>
   </context-param>
-  
-   <context-param>
-  	<param-name>PDFOutDir</param-name>
-  	<param-value>output/pdf/</param-value>
+  <context-param>
+    <param-name>PDFOutDir</param-name>
+    <param-value>output/pdf/</param-value>
   </context-param>
- 
-   <context-param>
-  	<param-name>dbPath</param-name>
-  	<param-value>database/InfoDipendenti.sqlite</param-value>
-	</context-param> 
+  <context-param>
+    <param-name>dbPath</param-name>
+    <param-value>database/InfoDipendenti.sqlite</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dbOutPath</param-name>
+    <param-value>database/dbOut.sqlite</param-value>
+  </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
@@ -34,7 +36,6 @@
     <servlet-name>appServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description></description>
     <display-name>SplitServlet</display-name>
@@ -44,5 +45,45 @@
   <servlet-mapping>
     <servlet-name>SplitServlet</servlet-name>
     <url-pattern>/SplitServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>EditDb</display-name>
+    <servlet-name>EditDb</servlet-name>
+    <servlet-class>com.pdfProject.servlet.EditDb</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditDb</servlet-name>
+    <url-pattern>/EditDb</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ZipServlet</display-name>
+    <servlet-name>ZipServlet</servlet-name>
+    <servlet-class>com.pdfProject.servlet.ZipServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ZipServlet</servlet-name>
+    <url-pattern>/ZipServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddEmp</display-name>
+    <servlet-name>AddEmp</servlet-name>
+    <servlet-class>com.pdfProject.servlet.AddEmp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddEmp</servlet-name>
+    <url-pattern>/AddEmp</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DeleteEmp</display-name>
+    <servlet-name>DeleteEmp</servlet-name>
+    <servlet-class>com.pdfProject.servlet.DeleteEmp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteEmp</servlet-name>
+    <url-pattern>/DeleteEmp</url-pattern>
   </servlet-mapping>
 </web-app>

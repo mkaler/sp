@@ -51,7 +51,7 @@ public final class ManipulatePDF  {
 	 * @param inputPathDB	Path of the database file
 	 * @throws Exception
 	 */
-	public void init(File toSplit, String outputPathPDF, String dbPath)
+	public void init(File toSplit, String outputPathPDF, String dbPath, String dbOutPath)
 	{
 		/**
 		 * 
@@ -64,7 +64,7 @@ public final class ManipulatePDF  {
 				splitSingle(toSplit, (outputPathPDF  + emp.getName() + "_" + emp.getLastName() + ".pdf").replaceAll(" ", "_")
 						, emp );
 			
-			EmpsToSqlite(dbPath);	
+			EmpsToSqlite(dbOutPath);	
 		}
 		catch(Exception ex)
 		{
@@ -219,6 +219,42 @@ public final class ManipulatePDF  {
 		
 		return emps;
 	}
+	public static List<Employee> DBToListOut(String inputPathDB) throws Exception{
+		Connection con = null;
+		Statement stmt = null;
+		List<Employee> emps = new LinkedList<Employee>();
+		try
+		{
+			Class.forName("org.sqlite.JDBC");
+		    con = DriverManager.getConnection("jdbc:sqlite:"+inputPathDB);
+		    con.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    stmt = con.createStatement();
+		  
+		    ResultSet rs = stmt.executeQuery( "SELECT * FROM BustaPaga;" );
+		      while ( rs.next() ) {
+		    	 Employee emp = new Employee();
+		         emp.setName(rs.getString("Nome"));
+		         emp.setLastName(rs.getString("Cognome"));
+		         emp.setCf(rs.getString("CF"));
+		         emp.setMese(rs.getString("Mese"));
+		         emp.setAnno(rs.getInt("Anno"));
+		         emp.setCifra(rs.getFloat("Cifra"));
+		         emps.add(emp);
+		      }
+		      rs.close();
+		      stmt.close();
+		      con.close();
+		      System.out.println("The information from the database has been imported");
+		}
+		catch(Exception exSQL)
+		{
+			throw new Exception(exSQL.getMessage(), exSQL);
+		}
+		
+		
+		return emps;
+	}
 	
 	/**
 	 * Exports a list of employees to a sqlite database
@@ -226,37 +262,49 @@ public final class ManipulatePDF  {
 	 * @param outputPathDB Path to save the .sqlite database file
 	 * @throws ClassNotFoundException 
 	 */
-	private void EmpsToSqlite(String dbPath) throws ClassNotFoundException{
-		 	Connection con = null;
-		    Statement stmt = null;
-		    try {
-			      Class.forName("org.sqlite.JDBC");
-			      con = DriverManager.getConnection("jdbc:sqlite:"+dbPath);
-			      con.setAutoCommit(false);
-			      System.out.println("Opened database successfully");
-	
-			      stmt = con.createStatement();
-			      //stmt.executeUpdate("PRAGMA foreign_keys = ON;");
-			      for(Employee emp: empList)
-			      {
-			    	  if(emp.getAnno() != null)
-			    	  {
-				    	 String temp = "INSERT INTO bustaPaga" + " VALUES (" + emp.toStringDB() + ");";
-				    	 stmt.executeUpdate(temp);
-			    	  }
-			      }
-			      
-			      System.out.println("Database has been updated");
-			      
-			      stmt.close();
-			      con.commit();
-			      con.close();
-		    }
-		    catch(Exception ex) 
-		    {
-		    	ex.printStackTrace();
-		    }
-	}
-	
+	private void EmpsToSqlite(String ouputPathDb) throws ClassNotFoundException{
+	 	Connection con = null;
+	    Statement stmt = null;
+	    try {
+		      Class.forName("org.sqlite.JDBC");
+		      File db = new File(ouputPathDb);
+		      
+		      if(db.exists())
+		      	db.delete();
 
+		      con = DriverManager.getConnection("jdbc:sqlite:"+db);
+		      con.setAutoCommit(false);
+		      System.out.println("Opened database successfully");
+
+		      stmt = con.createStatement();
+			      
+			  String sql = "CREATE TABLE BustaPaga" +
+					  	"(Nome	TEXT    NOT NULL," + 
+			              "Cognome Text    NOT NULL," + 
+			              "CF	CHAR(16)	NOT NULL," + 
+			              "Mese    TEXT," +
+			              "Anno	INTEGER, "+
+			             "Cifra	REAL)";
+			 stmt.executeUpdate(sql);
+			 System.out.println("Database has been created");
+	      
+		   
+		      for(Employee emp: empList)
+		      {
+		    	 String temp = "INSERT INTO BustaPaga" + " VALUES (" + emp.toStringDBF() + ");";
+		    	 stmt.executeUpdate(temp);
+		      }
+		      
+		      System.out.println("Database has been updated");
+		      
+		      stmt.close();
+		      con.commit();
+		      con.close();
+	    }
+	    catch(Exception ex) 
+	    {
+	    	ex.printStackTrace();
+	    }
+	
+	}
 }

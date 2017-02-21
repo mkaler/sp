@@ -85,8 +85,11 @@ public class Employee {
 		this.cifra = cifra;
 	}
 	
+	public String toStringDBF(){
+		return "'"+name+"','"+lastName+"','"+cf+"','"+mese+"',"+anno+","+cifra;
+	}
 	public String toStringDB(){
-		return "'"+mese+"',"+anno+","+cifra+",'"+cf+"'";
+		return "'"+name+"','"+lastName+"','"+cf+"'";
 	}
 
 	@Override

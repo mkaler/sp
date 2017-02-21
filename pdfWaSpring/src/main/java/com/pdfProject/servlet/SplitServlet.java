@@ -17,6 +17,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.pdfProject.core.Employee;
 import com.pdfProject.core.ManipulatePDF;
 
 /**
@@ -43,7 +44,11 @@ public class SplitServlet extends HttpServlet {
 			
 			splitPDF(file);
 			
-			makeZip(request, response);
+			List<Employee> emps = ManipulatePDF.DBToListOut(getServletContext().getInitParameter("dbOutPath"));
+			
+			request.setAttribute("users", emps);
+			
+			request.getRequestDispatcher("/WEB-INF/views/download.jsp").forward(request, response);
 			
 		}
 		catch(ServletException servletEx)
@@ -122,71 +127,12 @@ public class SplitServlet extends HttpServlet {
 	private void splitPDF(File file) throws Exception
 	{
 		ManipulatePDF p = new ManipulatePDF();
-		p.init(file, getServletContext().getInitParameter("PDFOutDir"),getServletContext().getInitParameter("dbPath"));
+		p.init(file, getServletContext().getInitParameter("PDFOutDir"),getServletContext().getInitParameter("dbPath"),
+				getServletContext().getInitParameter("dbOutPath"));
 		System.out.println("Done");
 		
 	}
-	private void zipDir(String dir2zip, ZipOutputStream zos) throws IOException 
-	{
-	        //create a new File object based on the directory we have to zip File    
-	        File zipDir = new File(dir2zip); 
-	        //get a listing of the directory content 
-	        String[] dirList = zipDir.list(); 
-	        byte[] readBuffer = new byte[2156]; 
-	        int bytesIn = 0; 
-	        //loop through dirList, and zip the files 
-	        for(int i=0; i<dirList.length; i++) 
-	        { 
-	            File f = new File(zipDir, dirList[i]); 
-	            if(f.isDirectory()) 
-	            { 
-	                //if the File object is a directory, call this 
-	                //function again to add its content recursively 
-	                String filePath = f.getPath();
-	            //  String filePath = f.getCanonicalPath();
 
-	                zipDir(filePath, zos);
-	                //loop again 
-	                continue; 
-	            } 
-	            //if we reached here, the File object f was not  a directory 
-	            //create a FileInputStream on top of f 
-	            FileInputStream fis = new FileInputStream(f); 
-	            // create a new zip entry 
-	            ZipEntry anEntry = new ZipEntry(f.getName()); 
-	            //place the zip entry in the ZipOutputStream object 
-	            zos.putNextEntry(anEntry); 
-	            //now write the content of the file to the ZipOutputStream 
-	            while((bytesIn = fis.read(readBuffer)) != -1) 
-	            { 
-	                zos.write(readBuffer, 0, bytesIn); 
-	            } 
-	            //close the Stream 
-	            fis.close(); 
-	        }  
-	    
-	}
-	private void makeZip(HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		try 
-	    { 
-	        response.setContentType("application/zip");
-	        response.setHeader("Content-Disposition", "attachment;filename=dividedPDFs.zip");
 
-	        ZipOutputStream zos = new 
-	               ZipOutputStream(response.getOutputStream()); 
-
-	        zipDir(getServletContext().getInitParameter("PDFOutDir"), zos); 
-
-	        zos.close();
-	        //request.getRequestDispatcher("/WEB-INF/jsps/acceptFile.jsp").forward(request, response);
-	    } 
-	    catch(Exception e) 
-	    { 
-	       throw new Exception("Error while making the zip", e);
-	    } 
-
-		
-	}
 
 }
