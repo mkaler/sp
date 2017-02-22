@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
@@ -28,7 +29,8 @@ public class DeleteEmp extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		Connection con = null;
 	    Statement stmt = null;
 		try
@@ -46,20 +48,34 @@ public class DeleteEmp extends HttpServlet {
 	    	 con = DriverManager.getConnection("jdbc:sqlite:"+getServletContext().getInitParameter("dbPath"));
 	    	 con.setAutoCommit(false);
 	    	 stmt = con.createStatement();
+	    	 
 	    	 String sql = "DELETE FROM dipendenti " +
 	                   "WHERE cf = " + "'"+cf+"'";
 	    	 
 	    	 stmt.executeUpdate(sql);
 	    	 con.commit();
+	    	 //stmt.executeUpdate("VACUUM");
+	    	// con.commit();
 	    	 stmt.close();
 	    	 
 	    	 response.sendRedirect("EditDb");
 	    	 
 		}
-		catch(Exception ex)
+		catch(IOException exIO)
 		{
-			ex.printStackTrace();
+			getServletContext().setAttribute("errorMessageEx", exIO.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
 		}
+		catch(SQLException exSQL)
+		{
+			getServletContext().setAttribute("errorMessageEx", exSQL.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
+		}
+		catch(ClassNotFoundException exS)
+		{
+			getServletContext().setAttribute("errorMessageEx", exS.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
+		}	
 		finally
 		{
 			try
@@ -69,8 +85,9 @@ public class DeleteEmp extends HttpServlet {
 				if(stmt != null)
 					stmt.close();
 			}
-			catch(Exception ex){}
+			catch(SQLException ex){}
 		}
+		
 	}
 
 	/**

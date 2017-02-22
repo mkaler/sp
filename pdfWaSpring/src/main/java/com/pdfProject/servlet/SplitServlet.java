@@ -1,7 +1,6 @@
 package com.pdfProject.servlet;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 
 import com.pdfProject.core.Employee;
 import com.pdfProject.core.ManipulatePDF;
@@ -26,6 +26,10 @@ import com.pdfProject.core.ManipulatePDF;
  */
 public class SplitServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	private int maxFileSize = ((int) java.lang.Math.pow(10, 6)) * 2;
+
+	 
 	private File file;
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,12 +45,14 @@ public class SplitServlet extends HttpServlet {
 		try
 		{
 			
+			FileUtils.cleanDirectory(new File(getServletContext().getInitParameter("PDFOutDir"))); 
+			
 			uploadPDF(request, response);
 			
 			splitPDF(file);
 			
 			List<Employee> emps = ManipulatePDF.DBToListOut(getServletContext().getInitParameter("dbOutPath"));
-			
+		
 			request.setAttribute("users", emps);
 			
 			List<String> files = getFilesNames();
@@ -56,18 +62,20 @@ public class SplitServlet extends HttpServlet {
 			request.getRequestDispatcher("/WEB-INF/views/download.jsp").forward(request, response);
 			
 		}
-		catch(ServletException servletEx)
+		catch(ServletException exS)
 		{
-			servletEx.printStackTrace();
-			
+			getServletContext().setAttribute("errorMessageEx", exS.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);	
 		}
-		catch(IOException IOEx)
+		catch(IOException exIO)
 		{
-			IOEx.getMessage();
+			getServletContext().setAttribute("errorMessageEx", exIO.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
 		}
 		catch(Exception ex)
 		{
-			ex.printStackTrace();
+			getServletContext().setAttribute("errorMessageEx", ex.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
 		}
 	}
 
@@ -95,6 +103,8 @@ public class SplitServlet extends HttpServlet {
 
 	      // Create a new file upload handler
 	      ServletFileUpload upload = new ServletFileUpload(factory);
+	      
+	      upload.setFileSizeMax(maxFileSize);
 
 	      // Parse the request to get file items.
 	      List<FileItem> fileItems = upload.parseRequest(request);
@@ -153,6 +163,7 @@ public class SplitServlet extends HttpServlet {
 		    }
 		    return files;
 	}
+
 
 
 

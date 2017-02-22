@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,12 +32,20 @@ public class ZipServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try
-		{
+		{	
+			if(new File(getServletContext().getInitParameter("PDFOutDir")).list().length < 1)
+			{
+				getServletContext().setAttribute("errorMessageEx","Content not avaliable");
+				request.getRequestDispatcher("/errorPage").forward(request, response);
+				return;
+			}
+				
 			makeZip(request, response);
 		}
 		catch(Exception ex)
 		{
-			ex.printStackTrace();
+			getServletContext().setAttribute("errorMessageEx", ex.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
 			
 		}
 	}
@@ -50,7 +60,7 @@ public class ZipServlet extends HttpServlet {
 	private void zipDir(String dir2zip, ZipOutputStream zos) throws IOException 
 	{
 	        //create a new File object based on the directory we have to zip File    
-	        File zipDir = new File(dir2zip); 
+	        File zipDir = new File(dir2zip);
 	        //get a listing of the directory content 
 	        String[] dirList = zipDir.list(); 
 	        byte[] readBuffer = new byte[2156]; 

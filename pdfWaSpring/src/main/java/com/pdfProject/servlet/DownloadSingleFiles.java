@@ -3,6 +3,7 @@ package com.pdfProject.servlet;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,7 +52,7 @@ public class DownloadSingleFiles extends HttpServlet {
         //FileCopyUtils.copy(inputStream, response.getOutputStream());
         
         //inputStream.close();
-        
+ 
         // get output stream of the response
         OutputStream outStream = response.getOutputStream();
  
@@ -66,9 +67,10 @@ public class DownloadSingleFiles extends HttpServlet {
         inputStream.close();
         outStream.close();
 	}
-	catch(Exception ex)
+	catch(FileNotFoundException ex)
 	{
-		ex.printStackTrace();
+		getServletContext().setAttribute("errorMessageEx", ex.getMessage());
+		request.getRequestDispatcher("/errorPage").forward(request, response);
 	}
         
         

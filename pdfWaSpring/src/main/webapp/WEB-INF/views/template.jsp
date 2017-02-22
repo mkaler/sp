@@ -49,22 +49,24 @@
 						 <form class="form-inline" action = "AddEmp" method = "post">
 						  <div class="form-group">
 							<label for="fname">First name:</label>
-							  <input type="text" class="form-control" name="fname">
+							  <input type="text" maxlength="30" required class="form-control" name="fname">
 						  </div>
 						  <div class="form-group">
 							<label for="lname">Last name:</label>
-							  <input type="text" class="form-control" name="lname">
+							  <input type="text" maxlength="30" required class="form-control" name="lname">
 						  </div>
 						  <div class="form-group">
 							<label for="cf">CF:</label>
-							  <input type="text" class="form-control" name="cf">
+							  <input type="text" pattern=".{16,16}" required title="has to be 16 characters" class="form-control" name="cf">
 						  </div>
-						  <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span></button>
+						  <div class="form-group">
+							  <input id="register" type="submit" class="btn btn-info" value="Add">
+						  </div>						  
 						</form>	
 								    
 				  </div>
 				  <br><br>		 	
-		<form action="DeleteEmp" method="post" id="toDel">            
+		<form action="DeleteEmp" method="post" id="toDel" onsubmit="return confirm('Confirm? ');">            
 		  <table class="table">
 		    <thead>
 		      <tr>
@@ -85,27 +87,46 @@
 			     </c:forEach>
 		    </tbody>
 		  </table>
+		  <input disabled name = "delete" type="submit" class="btn btn-danger btn-block" value="Remove">
 		 </form>
-		 <button class="btn btn-danger btn-block" form="toDel" type="submit" value="Submit" onclick="clicked();">Remove 
-		 <span class="glyphicon glyphicon-remove"></span></button>
 		 
 	</div>
-	
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
 		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>  
 		   <br><br><br><br><br><br><br><br><br><br>
+		   
 	</body>
 	<script type="text/javascript">
-	    function clicked() {
-	       if (confirm('are you sure?')) {
-	           yourformelement.submit();
-	       } else {
-	           return false;
-	       }
+	var $radioButtons = $("input:radio");
+
+	$radioButtons.change(function(){
+	    var anyRadioButtonHasValue = false;
+
+	    // iterate through all radio buttons
+	    $radioButtons.each(function(){
+	        if(this.checked){
+	            // indicate we found a radio button which has a value
+	            anyRadioButtonHasValue = true;
+
+	            // break out of each loop
+	            return false;
+	        }
+	    });
+
+	    // check if we found any radio button which has a value
+	    if(anyRadioButtonHasValue){
+	        // enable submit button.
+	        $("input[name='delete']").removeAttr("disabled");
 	    }
-    </script>
+	    else{
+	        // else is kind of redundant unless you somehow can clear the radio button value
+	        $("input[name='delete']").attr("disabled", "");
+	    }
+	});
+	</script>
 	<script type="text/javascript">
 		var cookie = ("" + document.cookie);
 		if(!cookie.match(/\S/))

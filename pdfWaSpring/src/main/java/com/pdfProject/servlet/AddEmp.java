@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
@@ -71,10 +72,21 @@ public class AddEmp extends HttpServlet {
 	    	rs.close();
 	    	response.sendRedirect("EditDb");
 	}
-	catch(Exception ex)
+	catch(IOException exIO)
 	{
-		ex.printStackTrace();
+		getServletContext().setAttribute("errorMessageEx", exIO.getMessage());
+		request.getRequestDispatcher("/errorPage").forward(request, response);
 	}
+	catch(SQLException exSQL)
+	{
+		getServletContext().setAttribute("errorMessageEx", exSQL.getMessage());
+		request.getRequestDispatcher("/errorPage").forward(request, response);
+	}
+	catch(ClassNotFoundException exS)
+	{
+			getServletContext().setAttribute("errorMessageEx", exS.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
+	}	
 	finally
 	{
 		try
@@ -86,7 +98,7 @@ public class AddEmp extends HttpServlet {
 			if(stmt != null)
 				stmt.close();
 		}
-		catch(Exception ex){}
+		catch(SQLException ex){}
 	}
 }
 

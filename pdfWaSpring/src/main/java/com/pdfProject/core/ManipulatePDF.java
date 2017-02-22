@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List; 
 
@@ -51,13 +51,10 @@ public final class ManipulatePDF  {
 	 * @param inputPathDB	Path of the database file
 	 * @throws Exception
 	 */
-	public void init(File toSplit, String outputPathPDF, String dbPath, String dbOutPath)
+	public void init(File toSplit, String outputPathPDF, String dbPath, String dbOutPath)throws FileNotFoundException,
+	IOException, SQLException, ClassNotFoundException
 	{
-		/**
-		 * 
-		 */
-		try
-		{
+		
 			empList = DBToList(dbPath);
 			
 			for(Employee emp: empList)
@@ -65,11 +62,6 @@ public final class ManipulatePDF  {
 						, emp );
 			
 			EmpsToSqlite(dbOutPath);	
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
 				
 	}
 	
@@ -129,7 +121,7 @@ public final class ManipulatePDF  {
 			stripAr.addRegion("anno", recAnno);
 			
 			
-			
+			boolean hasPages =false;
 			
 			
 			
@@ -142,7 +134,7 @@ public final class ManipulatePDF  {
 				if(stripper.getText(pdDoc).contains(emp.getCf()))
 				{
 					newDoc.addPage(pdDoc.getPage(0));
-					
+					hasPages = true;
 					//if "verify" is false it means the current page is the first page
 					if(!verify)
 					{
@@ -168,9 +160,13 @@ public final class ManipulatePDF  {
 				}
 				
 			}
+				
 			allPages.clear();
 			//saving the PDDocument in the PDF 
-			newDoc.save(outputFile);
+			if(hasPages)
+				newDoc.save(outputFile);
+			else
+				outputFile.delete();
 			//closing the documents
 			completeDoc.close();
 			newDoc.close();
@@ -186,10 +182,12 @@ public final class ManipulatePDF  {
 	 * @return List of employees with data imported from the given .sqlite file
 	 * @throws Exception
 	 */
-	public static List<Employee> DBToList(String inputPathDB) throws Exception{
+	public static List<Employee> DBToList(String inputPathDB) throws ClassNotFoundException, SQLException{
 		Connection con = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		List<Employee> emps = new LinkedList<Employee>();
+		
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
@@ -198,7 +196,7 @@ public final class ManipulatePDF  {
 		    System.out.println("Opened database successfully");
 		    stmt = con.createStatement();
 		  
-		    ResultSet rs = stmt.executeQuery( "SELECT * FROM dipendenti;" );
+		    rs = stmt.executeQuery( "SELECT * FROM dipendenti;" );
 		      while ( rs.next() ) {
 		    	 Employee emp = new Employee();
 		         emp.setName(rs.getString("nome"));
@@ -206,22 +204,32 @@ public final class ManipulatePDF  {
 		         emp.setCf(rs.getString("cf"));
 		         emps.add(emp);
 		      }
-		      rs.close();
-		      stmt.close();
-		      con.close();
-		      System.out.println("The information from the database has been imported");
+		      con.commit();
 		}
-		catch(Exception exSQL)
+		catch(ClassNotFoundException exCNF)
 		{
-			throw new Exception(exSQL.getMessage(), exSQL);
+			throw exCNF;
 		}
-		
+		catch(SQLException exS)
+		{
+			throw exS;
+		}
+		finally
+		{
+			if(rs != null)
+		      rs.close();
+			if(stmt != null)
+		      stmt.close();
+			if(con != null)
+		      con.close();
+		}
 		
 		return emps;
 	}
-	public static List<Employee> DBToListOut(String inputPathDB) throws Exception{
+	public static List<Employee> DBToListOut(String inputPathDB) throws ClassNotFoundException, SQLException{
 		Connection con = null;
 		Statement stmt = null;
+		 ResultSet rs = null;
 		List<Employee> emps = new LinkedList<Employee>();
 		try
 		{
@@ -231,7 +239,7 @@ public final class ManipulatePDF  {
 		    System.out.println("Opened database successfully");
 		    stmt = con.createStatement();
 		  
-		    ResultSet rs = stmt.executeQuery( "SELECT * FROM BustaPaga;" );
+		     rs = stmt.executeQuery( "SELECT * FROM BustaPaga;" );
 		      while ( rs.next() ) {
 		    	 Employee emp = new Employee();
 		         emp.setName(rs.getString("Nome"));
@@ -242,14 +250,24 @@ public final class ManipulatePDF  {
 		         emp.setCifra(rs.getFloat("Cifra"));
 		         emps.add(emp);
 		      }
-		      rs.close();
-		      stmt.close();
-		      con.close();
 		      System.out.println("The information from the database has been imported");
 		}
-		catch(Exception exSQL)
+		catch(ClassNotFoundException exCNF)
 		{
-			throw new Exception(exSQL.getMessage(), exSQL);
+			throw exCNF;
+		}
+		catch(SQLException exS)
+		{
+			throw exS;
+		}
+		finally
+		{
+			if(rs != null)
+		      rs.close();
+			if(stmt != null)
+		      stmt.close();
+			if(con != null)
+		      con.close();
 		}
 		
 		
@@ -262,9 +280,10 @@ public final class ManipulatePDF  {
 	 * @param outputPathDB Path to save the .sqlite database file
 	 * @throws ClassNotFoundException 
 	 */
-	private void EmpsToSqlite(String ouputPathDb) throws ClassNotFoundException{
+	private void EmpsToSqlite(String ouputPathDb) throws ClassNotFoundException, SQLException{
 	 	Connection con = null;
 	    Statement stmt = null;
+	    
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      File db = new File(ouputPathDb);
@@ -296,15 +315,25 @@ public final class ManipulatePDF  {
 		      }
 		      
 		      System.out.println("Database has been updated");
-		      
-		      stmt.close();
+	
 		      con.commit();
+		      
+	    }
+		catch(ClassNotFoundException exCNF)
+		{
+			throw exCNF;
+		}
+		catch(SQLException exS)
+		{
+			throw exS;
+		}
+		finally
+		{
+			if(stmt != null)
+		      stmt.close();
+			if(con != null)
 		      con.close();
-	    }
-	    catch(Exception ex) 
-	    {
-	    	ex.printStackTrace();
-	    }
+		}
 	
 	}
 }

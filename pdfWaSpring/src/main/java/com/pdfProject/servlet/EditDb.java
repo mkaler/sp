@@ -22,7 +22,7 @@ public class EditDb extends HttpServlet {
      */
     public EditDb() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**
@@ -40,8 +40,9 @@ public class EditDb extends HttpServlet {
 			request.getRequestDispatcher("/template").forward(request, response);
 			
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			getServletContext().setAttribute("errorMessageEx", ex.getMessage());
+			request.getRequestDispatcher("/errorPage").forward(request, response);
 		}
 		
 	}

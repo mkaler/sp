@@ -20,6 +20,10 @@
     <param-name>dbOutPath</param-name>
     <param-value>database/dbOut.sqlite</param-value>
   </context-param>
+  <error-page>
+  <exception-type>java.lang.Throwable</exception-type>
+  	<location>/ErrorHandler</location>
+ </error-page>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
@@ -95,5 +99,15 @@
   <servlet-mapping>
     <servlet-name>DownloadSingleFiles</servlet-name>
     <url-pattern>/DownloadSingleFiles</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ErrorHandler</display-name>
+    <servlet-name>ErrorHandler</servlet-name>
+    <servlet-class>com.pdfProject.servlet.ErrorHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ErrorHandler</servlet-name>
+    <url-pattern>/ErrorHandler</url-pattern>
   </servlet-mapping>
 </web-app>
