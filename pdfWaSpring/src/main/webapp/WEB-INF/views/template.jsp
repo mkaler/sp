@@ -32,10 +32,16 @@
 		  </div>
 		</div>	
 		<div class = "container">
-			
+			<ul class="pager">
+			  <li class="previous">
+		        <a href="/pro/" class="btn btn-lg">
+		          <span class="glyphicon glyphicon-home"></span> Home
+		        </a>
+	        </li>
+			</ul>
 		    <div class="panel panel-info">
 		      <div class="panel-heading">Employees</div>
-		      <div class="panel-body">You can add or remove one or more employees</div>
+		      <div class="panel-body">Add or remove an employee from the list</div>
 		    </div>	
 		    <button type="button" class="btn btn-info btn-block" data-toggle="collapse" data-target="#demo">Add an employee</button>
 				  <div id="demo" class="collapse">
@@ -53,7 +59,7 @@
 							<label for="cf">CF:</label>
 							  <input type="text" class="form-control" name="cf">
 						  </div>
-						  <button type="submit" class="btn btn-info">Add</button>
+						  <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span></button>
 						</form>	
 								    
 				  </div>
@@ -80,7 +86,9 @@
 		    </tbody>
 		  </table>
 		 </form>
-		 <button class="btn btn-danger btn-block" form="toDel" type="submit" value="Submit" onclick="clicked();">Delete</button>
+		 <button class="btn btn-danger btn-block" form="toDel" type="submit" value="Submit" onclick="clicked();">Remove 
+		 <span class="glyphicon glyphicon-remove"></span></button>
+		 
 	</div>
 	
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

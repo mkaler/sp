@@ -2,11 +2,12 @@ package com.pdfProject.servlet;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,6 +48,10 @@ public class SplitServlet extends HttpServlet {
 			List<Employee> emps = ManipulatePDF.DBToListOut(getServletContext().getInitParameter("dbOutPath"));
 			
 			request.setAttribute("users", emps);
+			
+			List<String> files = getFilesNames();
+			
+			request.setAttribute("filesNames", files);
 			
 			request.getRequestDispatcher("/WEB-INF/views/download.jsp").forward(request, response);
 			
@@ -131,6 +136,22 @@ public class SplitServlet extends HttpServlet {
 				getServletContext().getInitParameter("dbOutPath"));
 		System.out.println("Done");
 		
+	}
+	
+	private List<String> getFilesNames() throws FileNotFoundException
+	{
+		
+		File folder = new File(getServletContext().getInitParameter("PDFOutDir"));
+		File[] listOfFiles = folder.listFiles();
+		List<String> files = new ArrayList<String>();
+		    for (int i = 0; i < listOfFiles.length; i++)
+		    {
+		      if (listOfFiles[i].isFile()) 
+		      {
+		        files.add(listOfFiles[i].getName());
+		      }
+		    }
+		    return files;
 	}
 
 

@@ -34,6 +34,13 @@
 		<div class="container-fluid">
 	  
 		 <div class= "container">
+				<ul class="pager">
+				  <li class="previous">
+			        <a href="/pro/" class="btn btn-lg">
+			          <span class="glyphicon glyphicon-refresh"></span> Reload
+			        </a>
+		          </li>
+				</ul>
 				<div class="panel panel-info">
 				      <div class="panel-heading">Select the file and click on split</div>
 				      <div class="panel-body">
@@ -60,7 +67,7 @@
 				      <div class="panel-body">
 				      <br>
 				      <div class="panel panel-default">
-						  <div class="panel-body">You can edit and view the employees menu </div>
+						  <div class="panel-body">Go to the menu below to view the employees</div>
 					  </div>
 						<form action = "EditDb" >
 							<input type="submit" value="Employees menu" class = "btn btn-primary btn-block" >

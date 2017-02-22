@@ -11,7 +11,7 @@ public class Employee {
 	private String name = null;
 	private String lastName = null;
 	private String cf = null;
-	private String mese = null;
+	private String mese = "";
 	private Integer anno = null;
 	private Float cifra	= null;
 	

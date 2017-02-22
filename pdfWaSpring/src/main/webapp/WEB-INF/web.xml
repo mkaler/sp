@@ -86,4 +86,14 @@
     <servlet-name>DeleteEmp</servlet-name>
     <url-pattern>/DeleteEmp</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DownloadSingleFiles</display-name>
+    <servlet-name>DownloadSingleFiles</servlet-name>
+    <servlet-class>com.pdfProject.servlet.DownloadSingleFiles</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadSingleFiles</servlet-name>
+    <url-pattern>/DownloadSingleFiles</url-pattern>
+  </servlet-mapping>
 </web-app>
