@@ -27,7 +27,8 @@
 	<body>
 		<div class="container-fluid">
 		  <div class="jumbotron">
-		    <h1>Manager</h1>
+		  <img src="/resources/images/logo_header.png" alt="logo" />
+		  
 		    <p>Create a single .pdf file for a single employee, from a .pdf file containing information regarding all
 		    the employees</p>
 		  </div>
@@ -36,13 +37,6 @@
 		<div class="container-fluid">
 	  
 		 <div class= "container">
-				<ul class="pager">
-				  <li class="previous">
-			        <a href="/pro/" class="btn btn-lg">
-			          <span class="glyphicon glyphicon-refresh"></span> Reload
-			        </a>
-		          </li>
-				</ul>
 				<div class="panel panel-info">
 				      <div class="panel-heading">Select the file and click on split (2 MegaBytes maximum size)</div>
 				      <div class="panel-body">

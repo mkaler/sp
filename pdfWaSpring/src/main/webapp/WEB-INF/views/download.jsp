@@ -45,26 +45,24 @@
 							<button data-toggle="collapse" class="btn btn-info"data-target="#names">Files<span
 							 class="badge"><c:out value="${requestScope.filesNames.size()}"></c:out></span><span class="glyphicon glyphicon-menu-down"></span></button>
 							<div id="names" class="collapse">
-							<form action="DownloadSingleFiles" method = "get" id ="downloadSingle">
-							</form>
-								 <ul class="list-group">
-								 	
-								 	<c:forEach items="${requestScope.filesNames}" var= "name" >
-										  <li class="list-group-item"><div align="justify"><c:out value = "${name}" ></c:out></div>
-										  <br>
-											 <div class="btn-group">
-											 	<div align = "justify">
-													<button form = "downloadSingle" name  = "subButton" value ="${name}" type="submit" 
-														class="btn btn-success" onclick="submit">
-														<span class="glyphicon glyphicon-download"></span> download
-													</button>
-												  <a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span>
-												   View</a>
+								<form action="DownloadSingleFiles" method = "get" id ="downloadSingle">
+								</form>
+									 <ul class="list-group">
+									 	
+									 	<c:forEach items="${requestScope.filesNames}" var= "name" >
+											  <li class="list-group-item"><div align="justify"><c:out value = "${name}" ></c:out></div>
+											  <br>
+												 <div class="btn-group">
+												 	<div align = "justify">
+														<button form = "downloadSingle" name  = "subButton" value ="${name}" type="submit" 
+															class="btn btn-success" onclick="submit">
+															<span class="glyphicon glyphicon-download"></span> download
+														</button>
+													 </div>
 												 </div>
-											 </div>
-										  </li>
-								  	</c:forEach>
-								</ul>					
+											  </li>
+									  	 </c:forEach>
+									 </ul>					
 							</div>	
 							<br><br>
 							<form action="ZipServlet" method = "get" id ="download">
@@ -76,21 +74,6 @@
 							</p>			      	
 				      </div>
 				 </div>	
-		 <!--
-				<div class="panel panel-info">
-				      <div class="panel-heading">Preview</div>
-				      <div class="panel-body">
-							<form action="#" method = "get" id ="preview">
-							</form>
-							<p>View your files before downloading
-								<button form = "preview" type="submit" class="btn btn-info" onclick="submit">
-									<span class="glyphicon glyphicon-eye-open"></span> preview
-								</button>
-							</p>			      	
-				      </div>
-				 </div>	
-			 </div>
-		-->
 		</div>
 		<div class = "container">	
 			<div class="alert alert-success alert-dismissable">

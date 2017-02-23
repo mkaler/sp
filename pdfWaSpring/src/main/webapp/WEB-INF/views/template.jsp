@@ -27,7 +27,7 @@
 		<div class="container-fluid">
 		  <div class="jumbotron">
 		    <h1>Manager</h1>
-		    <p>Create single .pdf file for a single employee, from a .pdf file containing information regarding all
+		    <p>Create a single .pdf file for a single employee, from a .pdf file containing information regarding all
 		    the employees</p>
 		  </div>
 		</div>	

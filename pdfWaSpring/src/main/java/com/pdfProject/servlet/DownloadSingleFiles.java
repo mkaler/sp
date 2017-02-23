@@ -7,8 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,6 @@ public class DownloadSingleFiles extends HttpServlet {
      */
     public DownloadSingleFiles() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -36,44 +34,54 @@ public class DownloadSingleFiles extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String d = request.getParameter("subButton");
-	try
-	{
-		File toDown = new File(getServletContext().getInitParameter("PDFOutDir")+d);
-		
- 
-        // set content attributes for the response
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment;filename="+d);
-        
-        response.setContentLength((int)toDown.length());
-        
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(toDown));
-        
-        //FileCopyUtils.copy(inputStream, response.getOutputStream());
-        
-        //inputStream.close();
- 
-        // get output stream of the response
-        OutputStream outStream = response.getOutputStream();
- 
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytesRead = -1;
- 
-        // write bytes read from the input stream into the output stream
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-        }
- 
-        inputStream.close();
-        outStream.close();
-	}
-	catch(FileNotFoundException ex)
-	{
-		getServletContext().setAttribute("errorMessageEx", ex.getMessage());
-		request.getRequestDispatcher("/errorPage").forward(request, response);
-	}
-        
-        
+		String v = request.getParameter("viewButton");
+		if(d != null)
+		{
+			try
+			{
+				File toDown = new File(getServletContext().getInitParameter("PDFOutDir")+d);
+				
+		 
+		        // set content attributes for the response
+		        response.setContentType("application/pdf");
+		        response.setHeader("Content-Disposition", "attachment;filename="+d);
+		        
+		        response.setContentLength((int)toDown.length());
+		        
+		        InputStream inputStream = new BufferedInputStream(new FileInputStream(toDown));
+		        
+		        //FileCopyUtils.copy(inputStream, response.getOutputStream());
+		        
+		        //inputStream.close();
+		 
+		        // get output stream of the response
+		        OutputStream outStream = response.getOutputStream();
+		 
+		        byte[] buffer = new byte[BUFFER_SIZE];
+		        int bytesRead = -1;
+		 
+		        // write bytes read from the input stream into the output stream
+		        while ((bytesRead = inputStream.read(buffer)) != -1) {
+		            outStream.write(buffer, 0, bytesRead);
+		        }
+		 
+		        inputStream.close();
+		        outStream.close();
+			}
+			catch(FileNotFoundException ex)
+			{
+				getServletContext().setAttribute("errorMessageEx", ex.getMessage());
+				request.getRequestDispatcher("/errorPage").forward(request, response);
+			}
+		}
+		else 
+			{
+				String toView = "/web/viewer.html?file=%output/pdf/"+v;
+				System.out.println("V: "+ v);
+				request.getRequestDispatcher(toView).forward(request, response);
+			}
+		        
+		        
 	}
 
 	/**
